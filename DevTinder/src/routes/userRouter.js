@@ -36,7 +36,7 @@ userRouter.get("/feed", userAuth, async (req, res) => {
         },
       ],
     })
-      .select("firstName lastName")
+      .select("firstName lastName age gender emailId")
       .skip(skip)
       .limit(limit);
     res.send(userFeedData);

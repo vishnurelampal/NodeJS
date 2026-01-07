@@ -33,7 +33,7 @@ profileRouter.patch("/profile/updateDetails", userAuth, async (req, res) => {
     res.status(500).send("Err " + err.message);
   }
 });
-profileRouter.delete("/deletUserById", async (req, res) => {
+profileRouter.delete("/deletUserById", userAuth, async (req, res) => {
   const userId = req.body.userId;
   try {
     const userIdRes = await User.findByIdAndDelete(userId);
@@ -42,7 +42,7 @@ profileRouter.delete("/deletUserById", async (req, res) => {
     res.status(400).send("Error in deleting the data");
   }
 });
-profileRouter.delete("/deletByName/:firstName", async (req, res) => {
+profileRouter.delete("/deletByName/:firstName", userAuth, async (req, res) => {
   const Fname = req.params.firstName;
   try {
     const nameDeleted = await User.deleteMany({ firstName: Fname });
@@ -52,12 +52,12 @@ profileRouter.delete("/deletByName/:firstName", async (req, res) => {
   }
 });
 
-profileRouter.patch("/update/:userId", async (req, res) => {
+profileRouter.patch("/update/:userId", userAuth, async (req, res) => {
   const userDetails = req.body;
   try {
     const userId = req.params.userId;
-    const AllowedUpdates = ["firstName", "lastName"];
-    const allowedFlag = Object.keys(req.body).every((key) =>
+    const AllowedUpdates = ["firstName", "lastName", "skills"];
+    const allowedFlag = Object.keys(userDetails).every((key) =>
       AllowedUpdates.includes(key)
     );
     if (!allowedFlag) {
@@ -66,6 +66,8 @@ profileRouter.patch("/update/:userId", async (req, res) => {
     const updated = await User.updateOne(
       { _id: userId },
       { firstName: userDetails.firstName },
+      { skills: userDetails.skills },
+      { photoUrl: userDetails.photoUrl },
       { runValidators: true }
     );
     res.send(updated);

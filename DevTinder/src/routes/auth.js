@@ -38,7 +38,16 @@ authRouter.post("/login", async (req, res) => {
     } else {
       const token = jwt.sign({ _id: userFind._id }, secretKey);
       res.cookie("token", token);
-      res.send(userFind);
+      const dataToBeSent = {
+        _id: userFind._id,
+        firstName: userFind.firstName,
+        lastName: userFind.lastName,
+        emailId: userFind.emailId,
+        age: userFind.age,
+        gender: userFind.gender,
+        skills: userFind.skills,
+      };
+      res.send(dataToBeSent);
     }
   } catch (err) {
     res.status(400).send("Login Failed " + err.message);
