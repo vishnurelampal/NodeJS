@@ -20,6 +20,8 @@ authRouter.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
+    const token = jwt.sign({ _id: user._id }, secretKey);
+    res.cookie("token", token);
     res.send(user);
   } catch (err) {
     res.status(400).send(err.message);

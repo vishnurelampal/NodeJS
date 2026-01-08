@@ -13,9 +13,14 @@ profileRouter.get("/fetchuser", userAuth, async (req, res) => {
     res.status(400).send(err.message);
   }
 });
+let i = 0;
+
 profileRouter.patch("/profile/updateDetails", userAuth, async (req, res) => {
+  i++;
+  console.log(i);
   try {
-    const notAllowed = ["password", "age"];
+    console.log(req.body);
+    const notAllowed = ["password"];
     const flagObj = Object.keys(req.body).every(
       (item) => !notAllowed.includes(item)
     );
@@ -23,6 +28,7 @@ profileRouter.patch("/profile/updateDetails", userAuth, async (req, res) => {
       throw new Error("Edit not allowed");
     }
     const loggedUser = req.user;
+
     Object.keys(req.body).forEach((key) => (loggedUser[key] = req.body[key]));
     await loggedUser.save();
     res.json({
@@ -54,6 +60,7 @@ profileRouter.delete("/deletByName/:firstName", userAuth, async (req, res) => {
 
 profileRouter.patch("/update/:userId", userAuth, async (req, res) => {
   const userDetails = req.body;
+
   try {
     const userId = req.params.userId;
     const AllowedUpdates = ["firstName", "lastName", "skills"];
@@ -67,7 +74,7 @@ profileRouter.patch("/update/:userId", userAuth, async (req, res) => {
       { _id: userId },
       { firstName: userDetails.firstName },
       { skills: userDetails.skills },
-      { photoUrl: userDetails.photoUrl },
+      { photoUrl: "" },
       { runValidators: true }
     );
     res.send(updated);
